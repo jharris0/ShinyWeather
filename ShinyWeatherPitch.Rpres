@@ -1,0 +1,102 @@
+ShinyWeather Web App Pitch Deck
+========================================================
+author: Jesse Harris
+date: August 13, 2017
+autosize: true
+font-import: http://fonts.googleapis.com/css?family=Lora
+font-family: 'Lora'
+
+The Concept
+========================================================
+
+<style>
+.slideContent p, .slideContent ul {
+        font-size:80%;
+}
+
+.small-code pre code {
+  font-size: 1.1em;
+}
+</style>
+
+- People like to know the weather.
+- Our web app, called **ShinyWeather,** will display the weather.
+- It will pull data from the Weather Underground API and display it using Shiny.
+- Once we get enough users, we will put ads on it.
+
+***
+
+![Alpha version of ShinyWeather](ShinyWeather_Screenshot.png)
+
+Technical Details
+========================================================
+class: small-code
+
+When a user submits a location, we use `reactiveValues` and `observeEvent` to
+trigger an API call using the rwunderground package. Within a Shiny Dashboard
+framework, we display the data using Shiny elements and embedded googleVis
+charts. Here is a code example:
+
+```{r setOptions, echo=FALSE, message=FALSE}
+options(gvis.plot.tag="chart")
+library(googleVis)
+```
+
+```{r warning=FALSE, message=FALSE, echo=FALSE}
+library(googleVis)
+op <- options(gvis.plot.tag = 'chart')
+forecast <- read.csv(file = "temp.csv")
+```
+
+```{r warning=FALSE, message=FALSE, results='asis', tidy=FALSE, eval=FALSE}
+Area <- gvisAreaChart(forecast,
+                       xvar = "date",
+                       yvar = c("temp"),
+                       options = list(
+                               legend = "none",
+                               width = 500,
+                               height = 380,
+                               vAxis = "{title: 'temperature (°C)'}",
+                               vAxes = "[{viewWindowMode:'explicit',viewWindow:{min:0, max:45}}]"
+                        )
+)
+```
+
+Technical Details (Cont'd)
+========================================================
+class: small-code
+
+And if we plot the object from the previous slide, we get the following visualization based on the Google Charts API.
+
+```{r warning=FALSE, message=FALSE, results='asis', tidy=FALSE, echo=FALSE}
+Area <- gvisAreaChart(forecast,
+                       xvar = "date",
+                       yvar = c("temp"),
+                       options = list(
+                               legend = "none",
+                               width = 500,
+                               height = 380,
+                               vAxis = "{title: 'temperature (°C)'}",
+                               vAxes = "[{viewWindowMode:'explicit',viewWindow:{min:0, max:45}}]"
+                        )
+)
+```
+
+```{r warning=FALSE, message=FALSE, results='asis', tidy=FALSE}
+plot(Area)
+```
+
+Wrap-Up
+========================================================
+
+It doesn't look like much yet, but we are working on a number of improvements, such as:
+
+- Allow users to check weather for their own location, not just the four novelty locations currently shown.
+- Better yet, get the user's current location and look up weather conditions automatically.
+- Drop googleVis in favour of something easier to work with, maybe Plotly or something.
+
+### Credit
+
+This page was especially helpful in building this app:
+ 
+- http://www.alshum.com/shiny-reactive/
